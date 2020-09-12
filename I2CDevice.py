@@ -6,13 +6,13 @@ class I2CDevice:
         self.addr = addr
 
     def read_byte(self, reg):
-        return self.bus.read_byte_data(addr, reg)
+        return self.bus.read_byte_data(self.addr, reg)
 
     def write_byte(self, reg, value):
-        return self.bus.write_byte_data(addr, reg, value)
+        return self.bus.write_byte_data(self.addr, reg, value)
     
     def read_word(self, reg):
-        return self.bus.read_word_data(addr, reg)
+        return self.bus.read_word_data(self.addr, reg)
 
     def write_word(self, reg, value):
-        return self.bus.write_word_data(addr, reg, value)
+        return self.bus.write_word_data(self.addr, reg, value)
