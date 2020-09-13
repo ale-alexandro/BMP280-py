@@ -133,25 +133,9 @@ class BMP280(I2CDevice):
         else:
             I2CDevice.__init__(self, bus, addr)
 
-        self.chipID = self._getChipID()
-        if not self.chipID in self.data['CHIP_IDs']:
-            raise BMP280Error("Unknown ChipID. Your ChipID is {}".format(self.chipID))
-        
-        self.reset()
-        self.setPowerMode(self.data['NORMAL_MODE'])
-        self.setTemperatureOversampling(self.data['ULTRAHIGH_OVERSAMPLING_TEMPERATURE'])
-        self.setIrrFilter(self.data['FILTER_COEFF_16'])
-        self.setStandByTime(self.data['STANDBY_TIME_250_MS'])
-
-        self.calibration_data = dict()
-        self._get_calibration_data()
-        self.raw_data = dict()
-        self._get_raw_data()
-
-
     def update(self):
         self._get_raw_data()
-        getCelsium
+        self.temp = getCelsium(self.raw_data['temperature'])
 
     def getCelsium(self, t_adc):
         var1 = ((t_adc)/16384.0 - (self.calibration_data['T1'])/1024.0) * (self.calibration_data['T2']);
@@ -202,7 +186,23 @@ class BMP280(I2CDevice):
         config = self.getConfig() & 0b11100011
         self.setConfig(config | (value << 2))
 
-    
+    def init(self):
+        self.chipID = self._getChipID()
+        if not self.chipID in self.data['CHIP_IDs']:
+            raise BMP280Error("Unknown ChipID. Your ChipID is {}".format(self.chipID))
+        
+        self.reset()
+        self.setPowerMode(self.data['NORMAL_MODE'])
+        self.setTemperatureOversampling(self.data['ULTRAHIGH_OVERSAMPLING_TEMPERATURE'])
+        self.setIrrFilter(self.data['FILTER_COEFF_16'])
+        self.setStandByTime(self.data['STANDBY_TIME_250_MS'])
+
+        self.calibration_data = dict()
+        self._get_calibration_data()
+        self.raw_data = dict()
+        self._get_raw_data()
+
+        self.update()
 
 
     
